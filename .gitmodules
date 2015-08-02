@@ -1,0 +1,3 @@
+[submodule "lib/jbox2d"]
+	path = lib/jbox2d
+	url = https://github.com/jbox2d/jbox2d.git
