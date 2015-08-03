@@ -1,6 +1,7 @@
 JAVA_FILES := $(shell find src -type f -name '*.java')
 CLASS_FILES := $(patsubst src/%.java,obj/%.class,$(JAVA_FILES))
 JARFILE := TG.jar
+CLASSPATH := obj:lib/jbox2d-library-2.3.1-SNAPSHOT.jar #lib/jbox2d-library-2.1.2.2.jar
 
 .PHONY: all jar clean
 
@@ -8,7 +9,7 @@ all:	$(CLASS_FILES)
 
 obj/%.class: src/%.java
 	@mkdir -p obj
-	javac $< -d obj -cp obj
+	javac $< -d obj -cp $(CLASSPATH)
 
 clean:
 	$(RM) -r obj
