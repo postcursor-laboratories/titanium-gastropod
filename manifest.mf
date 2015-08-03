@@ -1,2 +1,2 @@
 Main-Class: Game
-Class-Path: lib/jbox2d-library-2.3.1-SNAPSHOT.jar lib/testbed.jar
+Class-Path: lib/jbox2d-library-2.3.1-SNAPSHOT.jar lib/testbed.jar lib/jbox2d-serialization-2.3.1-SNAPSHOT.jar

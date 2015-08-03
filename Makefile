@@ -1,9 +1,9 @@
 ifeq ($(findstring MINGW,$(shell uname)),MINGW)
 	JAVA_FILES := $(shell ./find src -type f -name '*.java')
-	CLASSPATH := "src;lib/jbox2d-library-2.3.1-SNAPSHOT.jar;lib/testbed.jar"
+	CLASSPATH := "src;lib/jbox2d-library-2.3.1-SNAPSHOT.jar;lib/testbed.jar;lib/jbox2d-serialization-2.3.1-SNAPSHOT.jar"
 else
 	JAVA_FILES := $(shell find src -type f -name '*.java')
-	CLASSPATH := "src:lib/jbox2d-library-2.3.1-SNAPSHOT.jar:lib/testbed.jar"
+	CLASSPATH := "src:lib/jbox2d-library-2.3.1-SNAPSHOT.jar:lib/testbed.jar:lib/jbox2d-serialization-2.3.1-SNAPSHOT.jar"
 endif
 CLASS_FILES := $(patsubst src/%.java,obj/%.class,$(JAVA_FILES))
 JARFILE := TG.jar
