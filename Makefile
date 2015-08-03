@@ -21,12 +21,7 @@ clean:
 	$(RM) $(JARFILE)
 
 jar:	all
-<<<<<<< HEAD
-# 	This patsubst thing is so that classes get recognized as themselves instead of as obj.Class
-	jar cfm $(JARFILE) manifest.mf -C obj .
-=======
 	jar cfm $(JARFILE) manifest.mf -C obj .
 
 run:	jar
 	java -jar TG.jar
->>>>>>> origin/jbox2d
