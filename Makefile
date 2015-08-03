@@ -8,7 +8,7 @@ all:	$(CLASS_FILES)
 
 obj/%.class: src/%.java
 	@mkdir -p obj
-	javac $< -d obj
+	javac $< -d obj -cp obj
 
 clean:
 	$(RM) -r obj

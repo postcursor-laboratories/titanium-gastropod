@@ -12,9 +12,12 @@ public class Game extends JPanel {
 	public static final int WINDOW_W = 800, WINDOW_H = 600;
 
 	private BufferedImage mScreenBuffer;
+	public Keys keys;
 
 	public Game() {
-		mScreenBuffer = new BufferedImage(WINDOW_W, WINDOW_H, BufferedImage.TYPE_INT_ARGB);
+		this.mScreenBuffer = new BufferedImage(WINDOW_W, WINDOW_H, BufferedImage.TYPE_INT_ARGB);
+		this.keys = new Keys();
+		this.addKeyListener(this.keys);
 		
 		setFocusable(true);
 		setPreferredSize(new Dimension(WINDOW_W, WINDOW_H));
@@ -23,21 +26,22 @@ public class Game extends JPanel {
 			@Override
 			public void run() {
 				while (true) {
-				Graphics2D g = (Graphics2D) mScreenBuffer.getGraphics();
-				g.setColor(Color.BLACK);
-				g.fillRect(0, 0, WINDOW_W, WINDOW_H);
+					keys.tick();
+					Graphics2D g = (Graphics2D) mScreenBuffer.getGraphics();
+					g.setColor(Color.BLACK);
+					g.fillRect(0, 0, WINDOW_W, WINDOW_H);
 
-				// do game drawing here
+					// do game drawing here
 
-				repaint();
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+					repaint();
+					try {
+						Thread.sleep(30);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
-			};
+		};
 		updateThread.start();
 	}
 
