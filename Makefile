@@ -8,10 +8,11 @@ JARFILE := TG.jar
 all:	$(CLASS_FILES)
 
 obj/%.class: src/%.java
+	@mkdir -p obj
 	javac $< -d obj
 
 clean:
-	$(RM) obj/*
+	$(RM) -r obj
 
 jar:	all			# TODO
 	jar cf $(JARFILE) obj/*.class
