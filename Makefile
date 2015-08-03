@@ -1,4 +1,8 @@
-JAVA_FILES := $(shell find src -type f -name '*.java')
+ifeq ($(findstring MINGW,$(shell uname)),MINGW)
+	JAVA_FILES := $(shell ./find src -type f -name '*.java')
+else
+	JAVA_FILES := $(shell find src -type f -name '*.java')
+endif
 CLASS_FILES := $(patsubst src/%.java,obj/%.class,$(JAVA_FILES))
 JARFILE := TG.jar
 CLASSPATH := obj:lib/jbox2d-library-2.3.1-SNAPSHOT.jar #lib/jbox2d-library-2.1.2.2.jar
@@ -17,4 +21,4 @@ clean:
 
 jar:	all
 # 	This patsubst thing is so that classes get recognized as themselves instead of as obj.Class
-	jar cfm $(JARFILE) manifest.mf -C obj $(patsubst obj/%,%,$(CLASS_FILES))
+	jar cfm $(JARFILE) manifest.mf -C obj .
