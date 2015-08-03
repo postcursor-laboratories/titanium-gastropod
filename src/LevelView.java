@@ -5,7 +5,7 @@ import org.jbox2d.dynamics.*;
 import org.jbox2d.collision.shapes.CircleShape;
 
 public class LevelView extends View {
-    private static final Vec2 GRAVITY = new Vec2(0, -.8f);
+    private static final Vec2 GRAVITY = new Vec2(0, -10f);
     private World mWorld;
     private Body mBody;
 
@@ -27,7 +27,7 @@ public class LevelView extends View {
     }
     
     public void update() {
-	mWorld.step(0.001f, 6, 2);
+	mWorld.step(0.030f, 6, 2);
     }
 
     public void draw(Graphics2D g) {
