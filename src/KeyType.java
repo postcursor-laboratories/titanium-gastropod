@@ -1,0 +1,1 @@
+public enum KeyType { UP, DOWN, LEFT, RIGHT, JUMP };

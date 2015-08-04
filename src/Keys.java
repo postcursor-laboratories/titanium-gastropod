@@ -3,12 +3,14 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 public class Keys implements KeyListener {
-	public enum KeyType { UP, DOWN, LEFT, RIGHT, JUMP };
-
+	
 	private HashSet<KeyType> keyMap;
 	private HashSet<KeyType> keyMapFrame;
+	
+	public static Keys inst;
 
 	public Keys() {
+		inst = this;
 		this.keyMap = new HashSet<KeyType>();
 		this.keyMapFrame = new HashSet<KeyType>();
 	}
