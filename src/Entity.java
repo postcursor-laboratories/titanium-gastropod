@@ -1,5 +1,4 @@
 import java.awt.Graphics2D;
-
 import org.jbox2d.dynamics.World;
 
 public abstract class Entity {
