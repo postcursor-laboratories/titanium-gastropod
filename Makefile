@@ -21,7 +21,7 @@ clean:
 	$(RM) $(JARFILE)
 
 jar:	all
-	jar cfm $(JARFILE) manifest.mf -C obj .
+	jar cfm $(JARFILE) manifest.mf -C obj . -C . res
 
 run:	jar
 	java -jar TG.jar

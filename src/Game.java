@@ -22,6 +22,7 @@ public class Game extends JPanel {
 		this.mKeys = new Keys();
 		inst = this;
 		this.addKeyListener(this.mKeys);
+		new ImageLoader();
 	
 		mCurrentView = new LevelView();
 		
