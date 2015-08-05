@@ -13,10 +13,11 @@ public class LevelView extends View {
     
     public LevelView() {
     	mWorld = new World(GRAVITY);
-	mLevel = new Level("WOP WOP", mWorld);
+	mLevel = new Level("level0", mWorld);
 	mEntities = mLevel.getEntities();
     }
-    
+
+    @Override
     public void update() {
     	mWorld.step(0.030f, 6, 2);
 
@@ -24,6 +25,7 @@ public class LevelView extends View {
 	    e.update(mWorld);
     }
 
+    @Override
     public void draw(Graphics2D g) {
 	for (Entity e : mEntities)
 	    e.draw(g);

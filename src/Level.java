@@ -1,3 +1,4 @@
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
@@ -8,8 +9,50 @@ public class Level {
     private ArrayList<Entity> mEntities;
     
     public Level(String name, World world) {
+	System.out.println("Loading Level "+name);
 	mEntities = new ArrayList<Entity>();
+
+	try {
+	    BufferedReader in = Utils.getFileInputStream("levels/"+name+".lsf");
+	    
+	    String line;
+	    int lineno = 0;
+	    while ((line = in.readLine()) != null) {
+		lineno++;
+		line = line.trim();
+		if (line.isEmpty())
+		    continue;
+		
+		String[] words = line.split("\\s+");
+		switch (words[0]) {
+		case "#":		// comment
+		    break;
+		    
+		case "RECTWALL":{
+		    if (words.length != 7) {
+			throw new RuntimeException("RECTWALL line has wrong number of words: `"+line+"'");
+		    }
+
+		    float x = Float.parseFloat(words[1]);
+		    float y = Float.parseFloat(words[2]);
+		    float t = Float.parseFloat(words[3]);
+		    float w = Float.parseFloat(words[4]);
+		    float h = Float.parseFloat(words[5]);
+		    float f = Float.parseFloat(words[6]);
+
+		    mEntities.add(new Wall(world, x, y, t, w, h, f));
+		    break;
+		}
+
+		default:
+		    throw new RuntimeException("Unknown LSF line type `"+words[0]+"' in line `"+line+"'");
+		}
+	    }
+	} catch (java.io.IOException e) {
+	    throw new RuntimeException("Could not load level `"+name+"': "+e.getMessage());
+	}
 	
+	/*
 	BodyDef bodyDef = new BodyDef();
 	bodyDef.type = BodyType.STATIC;
 	bodyDef.position.set(0, 0);
@@ -28,6 +71,7 @@ public class Level {
 	wall.createFixture(fdef);
 
 	mEntities.add(new Jarvis(world));
+	*/
     }
 
     public ArrayList<Entity> getEntities() {

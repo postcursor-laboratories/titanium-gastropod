@@ -1,0 +1,15 @@
+An LSF (level structure file, or level save format) file is a number
+of lines of plaintext, with each word on each line whitespace
+separated. The first word of a line (the line type) indicates what
+that line is to do. Empty lines are ok, and lines may begin with a #
+to indicate a comment.
+
+Line types:
+POLYWALL
+RECTWALL
+ENTITY
+
+The RECTWALL type:
+RECTWALL x y theta width height friction
+All numbers are floats. x, y are positions of the center of the
+rectangle. Theta is the rectangle's rotation, in degrees.
