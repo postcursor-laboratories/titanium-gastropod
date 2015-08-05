@@ -23,13 +23,9 @@ public class Jarvis extends Entity {
 	fdef.shape = shape;
 	fdef.friction = 1f;
 
-	Body wall;
 	jarvis = new Body[jCount][jCount];
 	for(int i=0;i<jCount;i++){
 	    for(int j=0;j<=i;j++){
-		wall = world.createBody(bodyDef);
-		// bodyDef.position.set(300+i*6, 300+j*6);
-					
 		bodyDef.position.set(300+3*i*(float)Math.cos(0.3*j*Math.PI*2/(i+0.3)+1), 300+3*i*(float)Math.sin(0.3*j*Math.PI*2/(i+0.3)+1));
 					
 		jarvis[i][j] = world.createBody(bodyDef);
