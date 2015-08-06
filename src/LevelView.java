@@ -4,7 +4,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 
 public class LevelView extends View {
-    private static final Vec2 GRAVITY = new Vec2(0, -50f);
+    private static final Vec2 GRAVITY = new Vec2(0, -2f);
     private World mWorld;
     private Level mLevel;
     private ArrayList<Entity> mEntities;

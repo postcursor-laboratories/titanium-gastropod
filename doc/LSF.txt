@@ -10,6 +10,9 @@ RECTWALL
 ENTITY
 
 The RECTWALL type:
-RECTWALL x y theta width height friction
+RECTWALL x y theta width height elasticity friction
 All numbers are floats. x, y are positions of the center of the
 rectangle. Theta is the rectangle's rotation, in degrees.
+
+The POLYWALL type:
+POLYWALL x1,y1,x2,y2,... elasticity friction

@@ -1,4 +1,6 @@
 import java.awt.Graphics2D;
+import java.awt.geom.Path2D;
+import java.util.ArrayList;
 
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
@@ -7,79 +9,81 @@ import org.jbox2d.collision.shapes.*;
 
 public class Jarvis extends Entity {
 
-	private Body[][] jarvis;
 	static final int jCount = 13; // Bloblings
-	
 	static final boolean WEDGE = true;
 
+	private Body[][] mJarvis;
+	private Body[] mSkin;
+	
 	public Jarvis(World world) {
 		super(world);
-
-		{ // Create wall
-			BodyDef bodyDef = new BodyDef();//
-			bodyDef.type = BodyType.STATIC;
-			bodyDef.position.set(0, 0);
-			bodyDef.angle = 0f;
-			Body wall = world.createBody(bodyDef);
-
-			PolygonShape shape = new PolygonShape();
-			shape.setAsBox(300, 10, new Vec2(150, 5), 0);
-
-			FixtureDef fdef = new FixtureDef();
-			fdef.friction = 0.6f;
-			fdef.shape = shape;
-			shape.setAsBox(300, 10, new Vec2(300, 10), 0);
-			wall.createFixture(fdef);
-			shape.setAsBox(10, 300, new Vec2(10, 300), 0);
-			wall.createFixture(fdef);
-		}
 
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DYNAMIC;
 		bodyDef.angle = 0f;
 
 		CircleShape shape = new CircleShape();
-		shape.setRadius(3);
+		shape.setRadius(0.1f);
 
 		FixtureDef fdef = new FixtureDef();
 		fdef.shape = shape;
 		fdef.friction = 1f;
 
-		jarvis = new Body[jCount][jCount];
+		mJarvis = new Body[jCount][jCount];
+//		mSkin = new Body[4*jCount];
 
-		if(WEDGE){
-			for (int i = 0; i < jCount; i++) {
-			 for(int j=0;j<=i;j++){ // Uncomment for great wedges
-					bodyDef.position.set(300+8*i*(float)Math.cos(0.1*j*Math.PI*2/(i+0.01)+1), 300+8*i*(float)Math.sin(0.1*j*Math.PI*2/(i+0.01)+1));
-					jarvis[i][j] = world.createBody(bodyDef);
-					jarvis[i][j].createFixture(fdef);
+		if(WEDGE){//Wedge shaped jarvis
+			
+			for (int i = 0; i < jCount; i++) { //Create bloblets
+				for(int j=0;j<=i;j++){
+					bodyDef.position.set(11+0.25f*i*(float)Math.cos(0.1*j*Math.PI*2/(i+0.01)+1.5), 10+0.25f*i*(float)Math.sin(0.1*j*Math.PI*2/(i+0.01)+1.5));
+					mJarvis[i][j] = world.createBody(bodyDef);
+					mJarvis[i][j].createFixture(fdef);
 				}
 			}
 
-			for (int i = 0; i < jCount - 2; i++) {
+			for (int i = 0; i < jCount - 2; i++) { //Local constant volume
 				for (int j = 0; j <= i; j++) {
 					ConstantVolumeJointDef cvjd = new ConstantVolumeJointDef();
 
-					cvjd.frequencyHz = 12.0f;
-					cvjd.dampingRatio = 10.0f;
+					cvjd.frequencyHz = 5f;
+					cvjd.dampingRatio = 0.5f;
 
-					cvjd.addBody(jarvis[i][j]);
-					cvjd.addBody(jarvis[i + 1][j + 1]);
-					cvjd.addBody(jarvis[i + 2][j + 2]);
-					cvjd.addBody(jarvis[i + 2][j + 1]);
-					cvjd.addBody(jarvis[i + 2][j]);
-					cvjd.addBody(jarvis[i + 1][j]);
+					cvjd.addBody(mJarvis[i][j]);
+					cvjd.addBody(mJarvis[i + 1][j + 1]);
+					cvjd.addBody(mJarvis[i + 2][j + 2]);
+					cvjd.addBody(mJarvis[i + 2][j + 1]);
+					cvjd.addBody(mJarvis[i + 2][j]);
+					cvjd.addBody(mJarvis[i + 1][j]);
 
-					world.createJoint(cvjd);
+					if(Math.random() > 0)
+						world.createJoint(cvjd);
 				}
 			}
 			
-		} else {
+			{ //Total body constant volume. Prevents local minima -- pieces getting "folded inside"
+				ConstantVolumeJointDef cvjd = new ConstantVolumeJointDef();
+	
+				cvjd.frequencyHz = 1000.0f;
+				cvjd.dampingRatio = 10.0f;
+	
+				for (int i = 0; i < jCount - 2; i++)
+					cvjd.addBody(mJarvis[i][0]);
+				for (int j = 1; j <= jCount - 1; j++)
+					cvjd.addBody(mJarvis[jCount - 1][j]);
+				for (int i = jCount - 2; i > 0; i--)
+					cvjd.addBody(mJarvis[i][i]);
+	
+				world.createJoint(cvjd);
+			}
+			
+		} else { //Square jarvis
+			
 			for (int i = 0; i < jCount; i++) {
 				for (int j = 0; j < jCount; j++) {
-					bodyDef.position.set(300 + i * 6, 300 + j * 6);
-					jarvis[i][j] = world.createBody(bodyDef);
-					jarvis[i][j].createFixture(fdef);
+					bodyDef.position.set(10 + i*0.2f, 10 + j*0.2f);
+					mJarvis[i][j] = world.createBody(bodyDef);
+					mJarvis[i][j].createFixture(fdef);
 				}
 			}
 			
@@ -90,14 +94,14 @@ public class Jarvis extends Entity {
 					cvjd.frequencyHz = 12.0f;
 					cvjd.dampingRatio = 10.0f;
 
-					cvjd.addBody(jarvis[i][j]);
-				    cvjd.addBody(jarvis[i+1][j]);
-				    cvjd.addBody(jarvis[i+2][j]);
-				    cvjd.addBody(jarvis[i+2][j+1]);
-				    cvjd.addBody(jarvis[i+2][j+2]);
-				    cvjd.addBody(jarvis[i+1][j+2]);
-				    cvjd.addBody(jarvis[i][j+2]);
-				    cvjd.addBody(jarvis[i][j+1]);
+					cvjd.addBody(mJarvis[i][j]);
+				    cvjd.addBody(mJarvis[i+1][j]);
+				    cvjd.addBody(mJarvis[i+2][j]);
+				    cvjd.addBody(mJarvis[i+2][j+1]);
+				    cvjd.addBody(mJarvis[i+2][j+2]);
+				    cvjd.addBody(mJarvis[i+1][j+2]);
+				    cvjd.addBody(mJarvis[i][j+2]);
+				    cvjd.addBody(mJarvis[i][j+1]);
 
 					world.createJoint(cvjd);
 				}
@@ -109,28 +113,48 @@ public class Jarvis extends Entity {
 	public void update(World world) {
 		Keys k = Keys.inst;
 		if (k.isPressed(KeyType.LEFT)) {
-			for (Body[] aB : jarvis)
+			for (Body[] aB : mJarvis)
 				for (Body b : aB)
 					if (b != null)
-						b.applyForceToCenter(new Vec2(-1000, 0));
-			// jarvis[0][0].applyForceToCenter(new Vec2(-1000,0));
+						b.applyForceToCenter(new Vec2(-10, 0));
+			// mJarvis[0][0].applyForceToCenter(new Vec2(-1000,0));
 		} else if (k.isPressed(KeyType.RIGHT)) {
-			for (Body[] aB : jarvis)
+			for (Body[] aB : mJarvis)
 				for (Body b : aB)
 					if (b != null)
-						b.applyForceToCenter(new Vec2(1000, 0));
-			// jarvis[0][0].applyForceToCenter(new Vec2(1000,0));
+						b.applyForceToCenter(new Vec2(10, 0));
+			// mJarvis[0][0].applyForceToCenter(new Vec2(1000,0));
 		}
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(java.awt.Color.WHITE);
-		g.drawLine(20, 20, 20, 600);
-		g.drawLine(20, 20, 600, 20);
+//		g.setColor(java.awt.Color.WHITE);
+//		for (Body[] aB : mJarvis)
+//			for (Body b : aB)
+//				if (b != null)
+//					g.fillOval(
+//							Utils.toPixelCoords(b.getPosition().x) - 3,
+//							Utils.toPixelCoords(b.getPosition().y) - 3,
+//							6, 6);
+		
+		ArrayList<Vec2> edgePoints = new ArrayList<>();
+		for (int i = 0; i < jCount - 2; i++)
+			edgePoints.add(mJarvis[i][0].getPosition());
+		for (int j = 1; j <= jCount - 1; j++)
+			edgePoints.add(mJarvis[jCount - 1][j].getPosition());
+		for (int i = jCount - 2; i > 0; i--)
+			edgePoints.add(mJarvis[i][i].getPosition());
+		Path2D.Float outline = new Path2D.Float();
 
-		for (Body[] aB : jarvis)
-			for (Body b : aB)
-				if (b != null)
-					g.fillOval((int) b.getPosition().x - 3, (int) b.getPosition().y - 3, 6, 6);
+	    outline.moveTo(Utils.toPixelCoords(edgePoints.get(edgePoints.size()-1).x),Utils.toPixelCoords(edgePoints.get(edgePoints.size()-1).y));
+	    for(Vec2 p : edgePoints){
+	    	outline.lineTo(Utils.toPixelCoords(p.x),Utils.toPixelCoords(p.y));
+	    }
+	    
+	    g.setColor(java.awt.Color.GRAY);
+	    g.fill(outline);
+	    
+		g.setColor(java.awt.Color.WHITE);
+	    g.draw(outline);
 	}
 }
